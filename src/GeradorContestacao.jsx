@@ -250,23 +250,17 @@ function buildContentBlocks(files, textPrompt) {
   return blocks;
 }
 
-// Safe API call — chama Anthropic direto com chave embutida no build via VITE_ANTHROPIC_API_KEY
+// Safe API call — proxy via /api/anthropic (Vercel serverless)
 async function callApi(payload) {
-  const apiKey = import.meta.env.VITE_ANTHROPIC_API_KEY || "";
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
+  const res = await fetch("/api/anthropic", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": apiKey,
-      "anthropic-version": "2023-06-01",
-      "anthropic-beta": "pdfs-2024-09-25",
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
   const rawText = await res.text();
   if (!rawText || rawText.trim() === "") throw new Error(`Resposta vazia (HTTP ${res.status}).`);
   let data;
-  try { data = JSON.parse(rawText); } catch { throw new Error(`Resposta inválida: ${rawText.slice(0, 200)}`); }
+  try { data = JSON.parse(rawText); } catch { throw new Error(`Resposta invalida: ${rawText.slice(0, 200)}`); }
   if (data.error) throw new Error(typeof data.error === "string" ? data.error : (data.error.message || JSON.stringify(data.error)));
   return data;
 }

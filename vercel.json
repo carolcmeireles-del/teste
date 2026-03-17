@@ -1,9 +1,4 @@
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "rewrites": [
-    { "source": "/api/anthropic", "destination": "/api/anthropic" }
-  ],
   "functions": {
     "api/anthropic.js": {
       "maxDuration": 120
