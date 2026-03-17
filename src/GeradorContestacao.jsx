@@ -455,11 +455,17 @@ ${usarSumula ? `\nINCLUAR TESE SÚMULA 492: Sim — mantenha o marcador [INSERIR
 
 Siga rigorosamente a estrutura e as instruções do template.`);
 
-      const data = await callApi({ model: "claude-sonnet-4-20250514", max_tokens: 8000, system: buildContestacaoSystem(usarSumula, temPreliminar), messages: [{ role: "user", content }] });
+      const data = await callApi({ model: "claude-sonnet-4-20250514", max_tokens: 4000, system: buildContestacaoSystem(usarSumula, temPreliminar), messages: [{ role: "user", content }] });
       let text = data.content?.map(b => b.text || "").join("") || "";
 
+      // Debug: log what we got
+      console.log("API response stop_reason:", data.stop_reason);
+      console.log("Content blocks:", data.content?.length);
+      console.log("Text length:", text.length);
+      console.log("First 200 chars:", text.slice(0, 200));
+
       if (!text.trim()) {
-        throw new Error("A IA retornou resposta vazia. Tente novamente.");
+        throw new Error(`A IA retornou resposta vazia. stop_reason: ${data.stop_reason}, blocos: ${data.content?.length}`);
       }
 
       // Insert tese with correct section number

@@ -38,6 +38,11 @@ exports.handler = async function (event) {
     });
 
     const data = await response.json();
+    console.log("Anthropic status:", response.status);
+    console.log("Anthropic response keys:", Object.keys(data));
+    console.log("Content length:", data.content?.length);
+    console.log("Stop reason:", data.stop_reason);
+    if (data.error) console.log("Anthropic error:", JSON.stringify(data.error));
     return { statusCode: response.status, headers, body: JSON.stringify(data) };
   } catch (err) {
     return { statusCode: 500, headers, body: JSON.stringify({ error: err.message || "Erro interno." }) };
