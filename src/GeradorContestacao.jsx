@@ -458,6 +458,10 @@ Siga rigorosamente a estrutura e as instruções do template.`);
       const data = await callApi({ model: "claude-sonnet-4-20250514", max_tokens: 8000, system: buildContestacaoSystem(usarSumula, temPreliminar), messages: [{ role: "user", content }] });
       let text = data.content?.map(b => b.text || "").join("") || "";
 
+      if (!text.trim()) {
+        throw new Error("A IA retornou resposta vazia. Tente novamente.");
+      }
+
       // Insert tese with correct section number
       if (usarSumula) {
         const teseFinal = applySumulaSection(TESE_SUMULA_492, sumulaSectionNum);
@@ -466,6 +470,10 @@ Siga rigorosamente a estrutura e as instruções do template.`);
 
       // Renumber all Arabic paragraphs sequentially
       text = renumberParagraphs(text);
+
+      if (!text.trim()) {
+        throw new Error("Erro no processamento do texto gerado. Tente novamente.");
+      }
 
       setContestacao(text);
       setStep("result");
@@ -707,17 +715,35 @@ Siga rigorosamente a estrutura e as instruções do template.`);
         </div>
         <div style={{ overflowY: "auto", padding: "36px 48px", background: "#f7f3ec" }}>
           <div style={{ maxWidth: 720, margin: "0 auto" }}>
-            <pre style={{
-              whiteSpace: "pre-wrap",
-              fontFamily: "'Georgia','Times New Roman',serif",
-              fontSize: 13.5,
-              lineHeight: 1.9,
-              color: "#1a1a1a",
-              margin: 0,
-              textAlign: "justify",
-            }}>
-              {contestacao}
-            </pre>
+            {!contestacao.trim() ? (
+              <div style={{ textAlign: "center", color: "#888", fontFamily: "Arial, sans-serif", paddingTop: 60 }}>
+                <div style={{ fontSize: 32, marginBottom: 12 }}>⚠️</div>
+                <div style={{ fontSize: 14 }}>O texto da contestação não foi recebido.</div>
+                <button onClick={() => setStep("review")} style={{ marginTop: 16, padding: "10px 20px", borderRadius: 8, border: "1px solid #ccc", background: "#fff", cursor: "pointer", fontSize: 13 }}>
+                  ← Voltar e tentar novamente
+                </button>
+              </div>
+            ) : (
+              <textarea
+                readOnly
+                value={contestacao}
+                style={{
+                  width: "100%",
+                  minHeight: "80vh",
+                  fontFamily: "'Georgia','Times New Roman',serif",
+                  fontSize: 13.5,
+                  lineHeight: 1.9,
+                  color: "#1a1a1a",
+                  background: "transparent",
+                  border: "none",
+                  outline: "none",
+                  resize: "none",
+                  textAlign: "justify",
+                  whiteSpace: "pre-wrap",
+                  boxSizing: "border-box",
+                }}
+              />
+            )}
           </div>
         </div>
       </div>
