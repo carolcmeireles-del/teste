@@ -252,16 +252,24 @@ function buildContentBlocks(files, textPrompt) {
 
 // Safe API call — chama a função Netlify diretamente
 async function callApi(payload) {
-  const res = await fetch("/.netlify/functions/anthropic", {
+  const apiKey = import.meta.env.VITE_ANTHROPIC_API_KEY || "";
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": apiKey,
+      "anthropic-version": "2023-06-01",
+      "anthropic-beta": "pdfs-2024-09-25",
+    },
     body: JSON.stringify(payload),
   });
-
   const rawText = await res.text();
-  if (!rawText || rawText.trim() === "") {
-    throw new Error(`Resposta vazia do servidor (HTTP ${res.status}).`);
-  }
+  if (!rawText || rawText.trim() === "") throw new Error(`Resposta vazia (HTTP ${res.status}).`);
+  let data;
+  try { data = JSON.parse(rawText); } catch { throw new Error(`Resposta inválida: ${rawText.slice(0, 200)}`); }
+  if (data.error) throw new Error(typeof data.error === "string" ? data.error : (data.error.message || JSON.stringify(data.error)));
+  return data;
+}
 
   let data;
   try {
