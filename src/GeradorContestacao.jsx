@@ -250,7 +250,7 @@ function buildContentBlocks(files, textPrompt) {
   return blocks;
 }
 
-// Safe API call — chama a função Netlify diretamente
+// Safe API call — chama Anthropic direto com chave embutida no build via VITE_ANTHROPIC_API_KEY
 async function callApi(payload) {
   const apiKey = import.meta.env.VITE_ANTHROPIC_API_KEY || "";
   const res = await fetch("https://api.anthropic.com/v1/messages", {
@@ -268,20 +268,6 @@ async function callApi(payload) {
   let data;
   try { data = JSON.parse(rawText); } catch { throw new Error(`Resposta inválida: ${rawText.slice(0, 200)}`); }
   if (data.error) throw new Error(typeof data.error === "string" ? data.error : (data.error.message || JSON.stringify(data.error)));
-  return data;
-}
-
-  let data;
-  try {
-    data = JSON.parse(rawText);
-  } catch {
-    throw new Error(`Resposta inválida: ${rawText.slice(0, 200)}`);
-  }
-
-  if (data.error) {
-    throw new Error(typeof data.error === "string" ? data.error : (data.error.message || JSON.stringify(data.error)));
-  }
-
   return data;
 }
 
