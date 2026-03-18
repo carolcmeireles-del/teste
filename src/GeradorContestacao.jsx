@@ -109,8 +109,115 @@ Retorne EXATAMENTE este JSON (preencha os campos encontrados, deixe "" para os n
   "documentos_juntados": "Lista e descrição de cada documento anexado pelo autor",
   "teses_autor": "Principais argumentos jurídicos do autor",
   "pontos_fracos_inicial": "Pontos frágeis ou inconsistências identificados na inicial e nos documentos",
-  "preliminares": "Preliminares identificadas que podem ser arguidas em defesa (ex: ilegitimidade passiva ad causam, inépcia da petição inicial, carência de ação, prescrição, decadência, falta de interesse de agir). Deixe VAZIO se não houver nenhuma."
+  "preliminares": "Preliminares identificadas que podem ser arguidas em defesa (ex: ilegitimidade passiva ad causam, inépcia da petição inicial, carência de ação, prescrição, decadência, falta de interesse de agir). Deixe VAZIO se não houver nenhuma.",
+  "gatilhos": {
+    "apenas_bo": "true se a prova principal do autor é apenas boletim de ocorrência, sem laudo pericial, fotos técnicas ou testemunhos. false caso contrário",
+    "alega_perda_total": "true se o autor alega perda total do veículo. false caso contrário",
+    "apenas_um_orcamento": "true se o autor apresentou apenas um orçamento (ou orçamento próprio da seguradora). false caso contrário",
+    "orcamento_propria_seguradora": "true se o orçamento foi elaborado pela própria seguradora autora. false caso contrário",
+    "colisao_traseira_autor": "true se o autor colidiu na traseira do veículo da ré. false caso contrário",
+    "pede_danos_morais_sem_lesao": "true se o autor pede danos morais mas não há lesão corporal comprovada no acidente. false caso contrário"
+  }
 }`;
+
+
+// ─── PLAYBOOK DE TESES ────────────────────────────────────────────────────────
+// Teses aplicadas automaticamente conforme gatilhos detectados na inicial
+
+const PLAYBOOK = {
+
+  apenas_bo: `
+DA NÃO COMPROVAÇÃO DE CULPA E NEXO DE CAUSALIDADE
+
+O motorista do veículo de responsabilidade da ré não praticou conduta culposa no referido acidente, o que impede a responsabilização da LM.
+
+Como se sabe, o proprietário do veículo só é responsabilizado por acidentes que efetivamente sejam causados pelo condutor de seu automóvel. Para tanto, é necessário que se comprove que o motorista agiu com culpa, o que não se vê no presente caso.
+
+Primeiro, porque a parte autora não comprovou que o acidente ocorreu na forma como ela narrou. A autora se limita a juntar boletim de ocorrência produzido unilateralmente que, como se sabe, não se presta como prova idônea, pois não respeita o contraditório. O documento contém meras declarações das partes, não gozando de credibilidade probatória.
+
+É nesse sentido, inclusive, que vem entendendo a jurisprudência pátria:
+
+"ACIDENTE DE TRÂNSITO — BOLETIM DE OCORRÊNCIA — PROVA UNILATERAL — ÔNUS DA PROVA — ART. 373, INC. I, DO CPC — PEDIDO CONTRAPOSTO. Não basta ao autor alegar, devendo efetivamente provar os fatos constitutivos de seu direito, sob pena de improcedência de seu pedido. Boletim de Ocorrência é prova unilateral dos fatos. Ausência de outras provas. Reforma da sentença e improcedência do pedido contraposto. Recurso parcialmente provido." (Proc. 0008403-82.2019.8.26.0004 — TJSP — Rel.: Rodrigo de Castro Carvalho — 3ª Turma Recursal — DJe em 14/04/2021)
+
+Segundo, a mera versão unilateral constante do boletim de ocorrência não é suficiente para demonstrar a dinâmica do acidente. O relato contido no documento policial baseia-se exclusivamente na versão apresentada pelos envolvidos, sem qualquer análise técnica ou investigação aprofundada.
+
+Terceiro, não há registros fotográficos do momento imediatamente posterior ao acidente que demonstrem a real dinâmica dos fatos narrados na inicial. A ausência de evidências técnicas compromete a credibilidade da versão apresentada pela autora.
+
+Como se sabe, é ônus de quem alega provar o fato constitutivo de seu direito (art. 373, I, CPC). Contudo, a parte autora não se desincumbe de seu ônus ao não produzir provas mínimas do ocorrido. Isso põe em xeque a narrativa inicial, de modo que não há comprovação mínima de relação entre a conduta do motorista do veículo da ré e os supostos danos sofridos pelo demandante. Assim, não estão presentes os pressupostos da responsabilidade civil, devendo ser julgados improcedentes os pedidos iniciais.`,
+
+  alega_perda_total: `
+DA AUSÊNCIA DE COMPROVAÇÃO DA PERDA TOTAL
+
+Primeiro, o valor apontado pela autora como dispendido para indenizar o segurado está absolutamente incompatível com os supostos danos. Como se extrai das imagens, não é possível identificar, realmente, a extensão dos danos que justificariam uma indenização integral.
+
+Segundo, é pacífico na jurisprudência que qualifica-se perda total do veículo segurado quando o valor necessário para realizar seu conserto atinge 75% do valor do bem:
+
+"APELAÇÃO. ACIDENTE DE VEÍCULO. AÇÃO REGRESSIVA. IMPUGNAÇÃO DA CARACTERIZAÇÃO DA PERDA TOTAL DO VEÍCULO. CONSERTO QUE ALCANÇARIA 75% DO VALOR DO BEM. SENTENÇA MANTIDA. RECURSO IMPROVIDO. [...] Qualifica-se perda total do veículo segurado quando o valor necessário para realizar seu conserto atinge 75% do valor do bem." (TJSP; Apelação Cível 0002121-84.2015.8.26.0063; Rel.: Adilson de Araujo; 31ª Câmara de Direito Privado; j. 23/05/2017)
+
+No caso, a autora não comprova adequadamente o valor de mercado do veículo na data do sinistro, de modo que não há prova de que houve perda total. Trata-se de afirmação unilateral da demandante sem qualquer comprovação.
+
+Terceiro, como se sabe, a reparação deve se ater ao efetivo prejuízo, sob pena de enriquecimento ilícito da parte autora. Seria dever da parte demandante a apresentação de três orçamentos para o conserto do veículo, sobretudo para garantir a lisura da quantificação dos danos, demonstrando, inclusive, que o valor do conserto seria superior ao limite de 75% do valor do bem. Trata-se de conduta exigida pelo princípio da boa-fé objetiva, posto que a parte tem o dever de mitigar os próprios danos.
+
+Em outras palavras, a parte autora, sem a mínima comprovação técnica dos danos e da caracterização de perda total, pretende obter indenização, o que configuraria um verdadeiro enriquecimento ilícito. Os danos materiais devem ser comprovados — não se indenizam danos hipotéticos ou imaginários.`,
+
+  apenas_um_orcamento: `
+DA INSUFICIÊNCIA PROBATÓRIA DO VALOR INDENIZATÓRIO
+
+A reparação deve se ater ao efetivo prejuízo, sob pena de enriquecimento ilícito da parte autora. Seria dever da parte demandante a apresentação de três orçamentos para o conserto de veículos, sobretudo para garantir a lisura da quantificação dos danos, inclusive demonstrando que o valor referente à perda total seria menor que o valor dos orçamentos. Trata-se de conduta exigida pelo princípio da boa-fé objetiva, na medida em que a parte tem o dever de mitigar os próprios danos.
+
+Como se extrai dos documentos, o orçamento do conserto foi elaborado de forma unilateral, sem consulta a terceiros especializados. Assim, sem verificar a opinião de profissionais independentes, a parte autora arbitrou os valores que entendeu serem devidos, o que resultou em valor incompatível com os danos que se extraem das imagens. É necessário que seja comprovado que o valor da indenização estava de acordo com o valor real de mercado do veículo, considerando seu estado de conservação, quilometragem e demais características.
+
+Diante disso, os supostos prejuízos alegados, além de não devidamente comprovados, representam violação à boa-fé objetiva, porquanto a demandante elaborou orçamento próprio, com valores distantes da realidade dos fatos e sem consultar terceiros especializados.`,
+
+  orcamento_propria_seguradora: `No presente caso, a autora optou por realizar orçamento próprio sem sequer consultar um terceiro desinteressado na lide, cujo valor extrapola em muito o que seria razoável, evidenciando o superfaturamento da indenização paga ao segurado.`,
+
+  colisao_traseira_autor: `
+DA CULPA EXCLUSIVA DO AUTOR PELA COLISÃO TRASEIRA
+
+A narrativa apresentada pelo autor evidencia de forma cristalina sua própria culpa pelo acidente, na medida em que admite expressamente não ter mantido distância segura do veículo que transitava à sua frente.
+
+O art. 29 do Código de Trânsito Brasileiro estabelece de forma inequívoca que "o condutor deverá guardar distância de segurança lateral e frontal entre o seu e os demais veículos". Trata-se de norma fundamental para a segurança no trânsito e sua inobservância caracteriza infração gravíssima.
+
+A jurisprudência é pacífica no sentido de que aquele que colide na traseira de outro veículo presume-se culpado pelo acidente, cabendo-lhe o ônus de provar fato impeditivo, modificativo ou extintivo do direito do autor. No caso, o demandante não logrou êxito em demonstrar qualquer excludente de responsabilidade.
+
+A conduta imprudente do autor foi a causa exclusiva do acidente, rompendo qualquer nexo de causalidade entre eventual conduta dos ocupantes do veículo da ré e os danos alegados. A versão dos fatos narrada pelo demandante apresenta inconsistências que merecem ser destacadas, colocando em dúvida a veracidade de sua narrativa. Por fim, o autor baseia sua narrativa exclusivamente em boletim de ocorrência lavrado unilateralmente, documento que não goza de presunção de veracidade quanto à dinâmica dos fatos, constituindo mera declaração de uma das partes.`,
+
+  pede_danos_morais_sem_lesao: `
+DA AUSÊNCIA DE DANOS MORAIS INDENIZÁVEIS
+
+A ausência dos pressupostos para a responsabilização civil já é suficiente para indeferir os danos morais pleiteados pela parte autora. No entanto, por cautela, passa a demonstrar especificamente a ausência de danos.
+
+Primeiro, não foi comprovado de forma robusta que ocorreu o acidente na forma narrada pelo autor. Como já demonstrado, o boletim de ocorrência é prova unilateral e não há outros elementos que atestem a forma em que se deu o suposto acidente.
+
+Segundo, não houve violação a nenhum direito da personalidade da parte autora. O autor não demonstrou em que medida sua honra, dignidade ou integridade moral foram violadas.
+
+Conforme entendimento do Superior Tribunal de Justiça, os danos morais decorrentes de acidente de trânsito sem vítima não são presumidos:
+
+"RECURSO ESPECIAL. AÇÃO INDENIZATÓRIA. DANOS MORAIS DECORRENTES DE COLISÃO DE VEÍCULOS. ACIDENTE SEM VÍTIMA. DANO MORAL IN RE IPSA. AFASTAMENTO. [...] Não caracteriza dano moral in re ipsa os danos decorrentes de acidentes de veículos automotores sem vítimas, os quais normalmente se resolvem por meio de reparação de danos patrimoniais. A condenação à compensação de danos morais, nesses casos, depende de comprovação de circunstâncias peculiares que demonstrem o extrapolamento da esfera exclusivamente patrimonial." (REsp nº 1.653.413/RJ — Rel. Min. Marco Aurélio Bellizze — julgado em 05/06/2018)
+
+Ou seja, deve a parte autora comprovar em que medida sofreu danos morais, quais os direitos foram violados e de que modo a parte ré contribuiu para essa situação. No entanto, não foi o que ocorreu no presente caso. O fato de o autor não poder utilizar o veículo não configura, por si só, dano moral indenizável — trata-se de mero aborrecimento decorrente da impossibilidade temporária de uso do bem, o que não atinge direitos da personalidade.
+
+Desse modo, verifica-se a absoluta ausência de danos morais. Ainda que se considere que houve dano moral, jamais poderia ser deferido no valor pleiteado pelo autor. O valor postulado é exagerado, desprovido de razoabilidade e proporcionalidade, configurando verdadeiro enriquecimento ilícito. Assim, se procedente a demanda, a indenização deverá ser arbitrada com moderação.`,
+
+};
+
+function buildPlaybookInstructions(gatilhos) {
+  if (!gatilhos) return "";
+  const g = gatilhos;
+  const teses = [];
+  if (g.apenas_bo === "true")                    teses.push(PLAYBOOK.apenas_bo);
+  if (g.alega_perda_total === "true")             teses.push(PLAYBOOK.alega_perda_total);
+  if (g.apenas_um_orcamento === "true") {
+    let t = PLAYBOOK.apenas_um_orcamento;
+    if (g.orcamento_propria_seguradora === "true") t += "\n\n" + PLAYBOOK.orcamento_propria_seguradora;
+    teses.push(t);
+  }
+  if (g.colisao_traseira_autor === "true")        teses.push(PLAYBOOK.colisao_traseira_autor);
+  if (g.pede_danos_morais_sem_lesao === "true")   teses.push(PLAYBOOK.pede_danos_morais_sem_lesao);
+  return teses.length > 0
+    ? `\n\nTESES DO PLAYBOOK JURÍDICO — INSERIR OBRIGATORIAMENTE:\n${teses.join("\n\n---\n")}`
+    : "";
+}
 
 function buildContestacaoSystem(usarSumula, temPreliminar) {
   // Dynamically build section numbering
@@ -422,6 +529,8 @@ export default function GeradorContestacao() {
         sumulaSectionNum = temPreliminar ? 3 : 2;
       }
 
+      const playbookInstructions = buildPlaybookInstructions(d.gatilhos);
+
       const content = buildContentBlocks(files, `
 Gere a contestação completa com os seguintes dados:
 
@@ -438,8 +547,11 @@ ANÁLISE DA INICIAL:
 - Pontos frágeis: ${d.pontos_fracos_inicial}
 ${temPreliminar ? `- PRELIMINARES A ARGUIR: ${d.preliminares}` : "- SEM PRELIMINARES"}
 
+GATILHOS DETECTADOS: ${JSON.stringify(d.gatilhos || {})}
+
 TESE DA DEFESA: ${d.TESE_PRINCIPAL || "Desenvolva a melhor tese com base nos documentos."}
 ${usarSumula ? `\nINCLUAR TESE SÚMULA 492: Sim — mantenha o marcador [INSERIR_TESE_SUMULA_492_AQUI] exatamente onde a tese deve ser inserida.` : ""}
+${playbookInstructions}
 
 Siga rigorosamente a estrutura e as instruções do template.`);
 
@@ -592,6 +704,42 @@ Siga rigorosamente a estrutura e as instruções do template.`);
               />
             </div>
           </div>
+
+          {/* PLAYBOOK — gatilhos detectados */}
+          {extracted.gatilhos && (
+            <div style={{ background: "#1a1a0d", border: "1px solid #4a4a1a", borderRadius: 10, padding: "14px 16px", marginBottom: 14 }}>
+              <div style={{ fontSize: 10, fontWeight: "bold", color: "#d4c44a", letterSpacing: 1.2, textTransform: "uppercase", marginBottom: 10 }}>
+                ⚡ TESES DO PLAYBOOK DETECTADAS
+              </div>
+              {[
+                ["apenas_bo",                  "Apenas BO — prova unilateral"],
+                ["alega_perda_total",           "Alegação de perda total"],
+                ["apenas_um_orcamento",        "Apenas um orçamento"],
+                ["orcamento_propria_seguradora","Orçamento da própria seguradora"],
+                ["colisao_traseira_autor",      "Colisão traseira do autor"],
+                ["pede_danos_morais_sem_lesao", "Danos morais sem lesão"],
+              ].map(([key, label]) => {
+                const ativo = extracted.gatilhos[key] === "true";
+                return (
+                  <div key={key} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "5px 0", borderBottom: "1px solid #4a4a1a33" }}>
+                    <span style={{ fontSize: 12, color: ativo ? "#d4c44a" : "#4a7a9b" }}>{label}</span>
+                    <button onClick={() => setExtracted(prev => ({
+                      ...prev,
+                      gatilhos: { ...prev.gatilhos, [key]: ativo ? "false" : "true" }
+                    }))} style={{
+                      background: ativo ? "#4a4a1a" : "#1a1a2d",
+                      border: `1px solid ${ativo ? "#d4c44a" : "#2a2a6e"}`,
+                      borderRadius: 20, padding: "3px 12px", fontSize: 11,
+                      color: ativo ? "#d4c44a" : "#4a7a9b", cursor: "pointer"
+                    }}>
+                      {ativo ? "✓ Ativo" : "Inativo"}
+                    </button>
+                  </div>
+                );
+              })}
+              <div style={{ fontSize: 10, color: "#4a7a9b", marginTop: 8 }}>Clique para ativar/desativar cada tese manualmente.</div>
+            </div>
+          )}
         </div>
 
         {/* RIGHT: Manual */}
