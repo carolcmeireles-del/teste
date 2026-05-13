@@ -92,6 +92,16 @@ A ausência dos pressupostos para a responsabilização civil já é suficiente 
 Conforme entendimento do Superior Tribunal de Justiça, os danos morais decorrentes de acidente de trânsito sem vítima não são presumidos: "Não caracteriza dano moral in re ipsa os danos decorrentes de acidentes de veículos automotores sem vítimas, os quais normalmente se resolvem por meio de reparação de danos patrimoniais. A condenação à compensação de danos morais, nesses casos, depende de comprovação de circunstâncias peculiares que demonstrem o extrapolamento da esfera exclusivamente patrimonial." (REsp nº 1.653.413/RJ — Rel. Min. Marco Aurélio Bellizze — julgado em 05/06/2018)
 
 Deve a parte autora comprovar em que medida sofreu danos morais, quais os direitos foram violados e de que modo a parte ré contribuiu para essa situação. Não foi o que ocorreu no presente caso. O fato de o autor não poder utilizar o veículo não configura, por si só, dano moral indenizável — trata-se de mero aborrecimento decorrente da impossibilidade temporária de uso do bem, o que não atinge direitos da personalidade.`,
+
+  pede_danos_morais_contratual: `DA AUSÊNCIA DE DANOS MORAIS INDENIZÁVEIS
+
+A ausência de ato ilícito por parte da demandada já é suficiente para indeferir o pedido de danos morais. Conforme demonstrado, a LM agiu em estrita conformidade com as cláusulas contratuais livremente pactuadas pelas partes, de modo que não há qualquer conduta ilícita que pudesse ensejar reparação extrapatrimonial.
+
+Os danos morais são devidos quando há violação a algum direito da personalidade da vítima — sua honra, dignidade, integridade moral ou imagem. No presente caso, não houve, por parte da LM, violação a nenhum destes direitos. Em verdade, o autor, em sua petição inicial, não aponta sequer um direito da personalidade violado apto a ensejar a indenização pleiteada. Limita-se a narrar uma situação de natureza eminentemente patrimonial decorrente do próprio descumprimento contratual do locatário.
+
+O mero dissabor ou aborrecimento decorrente de cobrança contratualmente devida não enseja reparação por danos morais. A jurisprudência pátria é pacífica no sentido de que nem todo transtorno ou contratempo vivenciado pelo consumidor é apto a gerar responsabilidade civil extrapatrimonial, exigindo-se que o fato ultrapasse o patamar do mero aborrecimento e efetivamente cause abalo à esfera da personalidade do demandante — o que não se verifica no caso em tela.
+
+Ainda que se considere que houve dano moral, jamais poderia ser deferido no valor pleiteado pelo autor. O valor postulado é exagerado, desprovido de razoabilidade e proporcionalidade, configurando verdadeiro enriquecimento ilícito. Assim, se procedente a demanda, a indenização deverá ser arbitrada com moderação, em consonância com os princípios da razoabilidade e proporcionalidade.`,
 };
 
 // ─── BIBLIOTECA DE MODELOS ────────────────────────────────────────────────────
@@ -271,9 +281,10 @@ const MODELOS = {
   },
 };
 
-function buildPlaybookInstructions(gatilhos) {
+function buildPlaybookInstructions(gatilhos, tipoCaso) {
   if (!gatilhos) return "";
   const g = gatilhos;
+  const isAcidente = tipoCaso === "acidente_transito";
   const teses = [];
   if (g.apenas_bo === "true")                    teses.push(PLAYBOOK.apenas_bo);
   if (g.alega_perda_total === "true")             teses.push(PLAYBOOK.alega_perda_total);
@@ -283,7 +294,10 @@ function buildPlaybookInstructions(gatilhos) {
     teses.push(t);
   }
   if (g.colisao_traseira_autor === "true")        teses.push(PLAYBOOK.colisao_traseira_autor);
-  if (g.pede_danos_morais_sem_lesao === "true")   teses.push(PLAYBOOK.pede_danos_morais_sem_lesao);
+  if (g.pede_danos_morais === "true") {
+    // Aplica tese correta conforme tipo de caso
+    teses.push(isAcidente ? PLAYBOOK.pede_danos_morais_sem_lesao : PLAYBOOK.pede_danos_morais_contratual);
+  }
   return teses.length > 0
     ? `\n\nTESES DO PLAYBOOK JURÍDICO — INSERIR OBRIGATORIAMENTE:\n${teses.join("\n\n---\n")}`
     : "";
@@ -330,7 +344,7 @@ Retorne EXATAMENTE este JSON:
     "apenas_um_orcamento": "true se o autor apresentou apenas um orçamento. false caso contrário",
     "orcamento_propria_seguradora": "true se o orçamento foi elaborado pela própria seguradora autora. false caso contrário",
     "colisao_traseira_autor": "true se o autor colidiu na traseira do veículo da ré. false caso contrário",
-    "pede_danos_morais_sem_lesao": "true se o autor pede danos morais mas não há lesão corporal comprovada. false caso contrário"
+    "pede_danos_morais": "true se o autor pede danos morais em qualquer hipótese. false caso contrário"
   }
 }`;
 
@@ -616,7 +630,7 @@ export default function GeradorContestacao() {
         ...(argumentosCustom.trim() ? argumentosCustom.split("\n").filter(Boolean) : []),
       ];
 
-      const playbookInstructions = buildPlaybookInstructions(d.gatilhos);
+      const playbookInstructions = buildPlaybookInstructions(d.gatilhos, d.tipo_caso);
       const modeloInfo = MODELOS[d.tipo_caso] || MODELOS.geral;
 
       const content = buildContentBlocks(files, `
@@ -797,7 +811,9 @@ Siga rigorosamente a estrutura e as instruções do template. Todos os pedidos d
                 ["apenas_um_orcamento","Apenas um orçamento"],
                 ["orcamento_propria_seguradora","Orçamento da própria seguradora"],
                 ["colisao_traseira_autor","Colisão traseira do autor"],
-                ["pede_danos_morais_sem_lesao","Danos morais sem lesão"],
+                ["pede_danos_morais", extracted.tipo_caso === "acidente_transito"
+                  ? "Danos morais — acidente sem vítima (STJ)"
+                  : "Danos morais — disputa contratual"],
               ].map(([key,label]) => {
                 const ativo = extracted.gatilhos[key] === "true";
                 return (
